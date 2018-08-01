@@ -367,26 +367,10 @@ void ompl_interface::ModelBasedPlanningContext::interpolateSolution()
   if (ompl_simple_setup_->haveSolutionPath())
   {
     og::PathGeometric& pg = ompl_simple_setup_->getSolutionPath();
-
-    // Find the number of states that will be in the interpolated solution.
-    // This is what interpolate() does internally.
-    int eventual_states = 1;
-    std::vector<ompl::base::State*> states = pg.getStates();
-    for (size_t i = 0; i < states.size() - 1; i++)
-    {
-      eventual_states += ompl_simple_setup_->getStateSpace()->validSegmentCount(states[i], states[i + 1]);
-    }
-
-    if (eventual_states < minimum_waypoint_count_)
-    {
-      // If that's not enough states, use the minimum amount instead.
-      pg.interpolate(minimum_waypoint_count_);
-    }
-    else
-    {
-      // Interpolate the path to have as the exact states that are checked when validating motions.
-      pg.interpolate();
-    }
+    int waypoint_count = max_solution_segment_length_ > std::numeric_limits<double>::epsilon() ?
+      std::max((unsigned int)floor(0.5 + pg.length() / max_solution_segment_length_), minimum_waypoint_count_)) :
+      minimum_waypoint_count_;
+    pg.interpolate(waypoint_count);
   }
 }
 
