@@ -369,7 +369,7 @@ void ompl_interface::ModelBasedPlanningContext::interpolateSolution()
     og::PathGeometric& pg = ompl_simple_setup_->getSolutionPath();
     const unsigned int waypoint_count =
         max_solution_segment_length_ > std::numeric_limits<double>::epsilon() ?
-            std::max<unsigned int>(std::ceil(pg.length() / max_solution_segment_length_, minimum_waypoint_count_)) :
+            std::max<unsigned int>(std::ceil(pg.length() / max_solution_segment_length_), minimum_waypoint_count_) :
             minimum_waypoint_count_;
     pg.interpolate(waypoint_count);
   }
